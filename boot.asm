@@ -25,7 +25,7 @@
          mov dword [ebx+0x0c],0x00cf9200    ;粒度为4KB，存储器段描述符 
 
          ;创建保护模式下初始代码段描述符
-         mov dword [ebx+0x10],0x7c0001ff    ;基地址为0x00007c00，界限0x1FF 
+         mov dword [ebx+0x10],0x7c00ffff    ;基地址为0x00007c00，界限0x1FF 
          mov dword [ebx+0x14],0x00409800    ;粒度为1个字节，代码段描述符 
 
          ;建立保护模式下的堆栈段描述符      ;基地址为0x00007C00，界限0xFFFFE 
@@ -96,26 +96,7 @@
          loop @2                            ;循环读，直到读完整个内核 
 
  setup:
-;         mov esi,[0x7c00+pgdt+0x02]         ;不可以在代码段内寻址pgdt，但可以
-;                                            ;通过4GB的段来访问
-;         ;建立公用例程段描述符
-;         ;建立核心数据段描述符
-;         ;建立核心代码段描述符
-;;         mov eax,[edi+0x04]                 ;核心代码段起始汇编地址
-;         mov eax,0x40000
-;         ;mov ebx,[edi+0x00]                 ;程序总长度
-;         ;sub ebx,eax
-;         ;dec ebx                            ;核心代码段界限
-;         mov ebx, 0x1ff
-;         add eax,edi                        ;核心代码段基地址
-;         mov ecx,0x00409800                 ;字节粒度的代码段描述符
-;         call make_gdt_descriptor
-;         mov [esi+0x28],eax
-;         mov [esi+0x2c],edx
-;         mov word [0x7c00+pgdt],47          ;描述符表的界限                      
-;        lgdt [0x7c00+pgdt]                  
-;         ;jmp far [0x40000]  
-         jmp 0x28:0x0 
+         jmp 0x28:0x4
        
 ;-------------------------------------------------------------------------------
 read_hard_disk_0:                        ;从硬盘读取一个逻辑扇区
