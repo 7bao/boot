@@ -40,15 +40,11 @@
          mov dword [ebx+0x20],0x80007fff    ;基地址为0x000B8000，界限0x07FFF 
          mov dword [ebx+0x24],0x0040920b    ;粒度为字节
 
-     	 mov dword [ebx+0x28],0x000001ff
+     	 mov dword [ebx+0x28],0x0000ffff
      	 mov dword [ebx+0x2c],0x00409804
-
-
-     	 mov dword [ebx+0x30],0x0000ffff	;vram vga mode
-     	 mov dword [ebx+0x34],0x0040920a
          
          ;初始化描述符表寄存器GDTR
-         mov word [cs: pgdt+0x7c00],55      ;描述符表的界限   
+         mov word [cs: pgdt+0x7c00],47      ;描述符表的界限   
  
          lgdt [cs: pgdt+0x7c00]
       

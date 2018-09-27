@@ -3,12 +3,91 @@ dd len
 extern show
 global _start
 
+global	io_hlt
+global  io_cli
+global  io_sti
+global  io_stihlt
+
+
+global	io_in8
+global  io_in16
+global  io_in32
+
+
+global	io_out8
+global  io_out16
+global  io_out32
+
+
+global	io_load_eflags
+global  io_store_eflags
+
 _start:
          [bits 32]
-         mov eax, 0x8 			;data segment (0-4GB)
-    	 mov es,eax
-    	 mov ds,eax
-
 	 call show
-         hlt
+         
+
+io_hlt:	; void io_hlt(void);
+		hlt
+		ret
+
+io_cli:	; void io_cli(void);
+		cli
+		ret
+
+io_sti:	; void io_sti(void);
+		sti
+		ret
+
+io_stihlt:	; void io_stihlt(void);
+		sti
+		hlt
+		ret
+
+io_in8:	; int io_in8(int port);
+		mov		edx,[esp+4]		; port
+		mov		eax,0
+		in		al,dx
+		ret
+
+io_in16:	; int io_in16(int port);
+		mov		edx,[esp+4]		; port
+		mov		eax,0
+		in		ax,dx
+		ret
+
+io_in32:	; int io_in32(int port);
+		mov		edx,[esp+4]		; port
+		in		eax,dx
+		ret
+
+io_out8:	; void io_out8(int port, int data);
+		mov		edx,[esp+4]		; port
+		mov		al,[esp+8]		; data
+		out		dx,al
+		ret
+
+io_out16:	; void io_out16(int port, int data);
+		mov		edx,[esp+4]		; port
+		mov		eax,[esp+8]		; data
+		out		dx,ax
+		ret
+
+io_out32:	; void io_out32(int port, int data);
+		mov		edx,[esp+4]		; port
+		mov		eax,[esp+8]		; data
+		out		dx,eax
+		ret
+
+io_load_eflags:	; int io_load_eflags(void);
+		pushfd		; push eflags 傛偄偆報枴
+		pop		eax
+		ret
+
+io_store_eflags:	; void io_store_eflags(int eflags);
+		mov		eax,[esp+4]
+		push	eax
+		popfd		; pop eflags 傛偄偆報枴
+		ret
+
 len:
