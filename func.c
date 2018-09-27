@@ -1,8 +1,11 @@
 
 void show(void)
 {
-	int i = 0x0b8008;
+	int i;
+	int j = 15;
 	char *p;
-	p = i;
-	*p = 0x072e074f;
+	for (i = 0xa0000; i<=0xaffff;i++)
+	{	p = i;
+		*p = j;
+	}
 }

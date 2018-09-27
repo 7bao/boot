@@ -2,10 +2,14 @@
          ;文件名：c13_mbr.asm
          ;文件说明：硬盘主引导扇区代码 
          ;创建日期：2011-10-28 22:35        ;设置堆栈段和栈指针 
-         
+
          core_base_address equ 0x00040000   ;常数，内核加载的起始内存地址 
          core_start_sector equ 0x00000001   ;常数，内核的起始逻辑扇区号 
          
+	 mov al,0x13
+	 mov ah,0x00
+	 int 0x10
+
          mov ax,cs      
          mov ss,ax
          mov sp,0x7c00
@@ -38,9 +42,13 @@
 
      	 mov dword [ebx+0x28],0x000001ff
      	 mov dword [ebx+0x2c],0x00409804
+
+
+     	 mov dword [ebx+0x30],0x0000ffff	;vram vga mode
+     	 mov dword [ebx+0x34],0x0040920a
          
          ;初始化描述符表寄存器GDTR
-         mov word [cs: pgdt+0x7c00],47      ;描述符表的界限   
+         mov word [cs: pgdt+0x7c00],55      ;描述符表的界限   
  
          lgdt [cs: pgdt+0x7c00]
       
@@ -152,28 +160,6 @@ read_hard_disk_0:                        ;从硬盘读取一个逻辑扇区
          pop edx
          pop ecx
          pop eax
-      
-         ret
-
-;-------------------------------------------------------------------------------
-make_gdt_descriptor:                     ;构造描述符
-                                         ;输入：EAX=线性基地址
-                                         ;      EBX=段界限
-                                         ;      ECX=属性（各属性位都在原始
-                                         ;      位置，其它没用到的位置0） 
-                                         ;返回：EDX:EAX=完整的描述符
-         mov edx,eax
-         shl eax,16                     
-         or ax,bx                        ;描述符前32位(EAX)构造完毕
-      
-         and edx,0xffff0000              ;清除基地址中无关的位
-         rol edx,8
-         bswap edx                       ;装配基址的31~24和23~16  (80486+)
-      
-         xor bx,bx
-         or edx,ebx                      ;装配段界限的高4位
-      
-         or edx,ecx                      ;装配属性 
       
          ret
       
